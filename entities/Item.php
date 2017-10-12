@@ -4,20 +4,20 @@
 
 class Item
 {
-	private $productId;
+	private $product;
 	private $quantity;
 	private $price;
 	private $total;
 	
-	public function __construct($productId, $quantity, $price, $total)
+	public function __construct($product, $quantity, $price, $total)
 	{
-		$this->productId = $productId;
+		$this->product = $product;
 		$this->quantity = $quantity;
 		$this->price = $price;
 		$this->total = $total;
 	}
 
-	public function getProductId() {return $this->productId;}
+	public function getProduct() {return $this->product;}
 	public function getQuantity() {return $this->quantity;}
 	public function getPrice() {return $this->price;}
 	public function getTotal() {return $this->total;}

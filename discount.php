@@ -3,8 +3,11 @@
 
 require_once("data/OrderDAO.php");
 require_once("data/CustomerDAO.php");
-// require_once("entities/Product.php");
-sdf
+require_once("data/ProductDAO.php");
+require_once("business/DiscountService.php");
+
+$discount = [];
+
 $orderDecode = json_decode(file_get_contents('php://input'),true);
 if (!empty($orderDecode)) {
 
@@ -14,23 +17,33 @@ if (!empty($orderDecode)) {
 	$customerDAO = new CustomerDAO();
 	$customer = $customerDAO->getCustomerById($order->getCustomerId());
 
-	print($order->getCustomerId());
-	var_dump($order);
-	var_dump($customer);
+	$discountSvc = new DiscountService();
+	$discount = $discountSvc->discountZero($discount, $order);
 
-	// $products = json_decode(file_get_contents("https://raw.githubusercontent.com/teamleadercrm/coding-test/master/data/products.json"));
+	$discount = $discountSvc->discountOne($discount, $order);
 
-	//header('Content-type: application/json');
-	//return json_encode($order);
+	$discountSubTotal = 0;
+	foreach ($discount as $reduction) {
+		$discountSubTotal += $reduction;
+	}
+	$currentTotal = $order->getTotal()-$discountSubTotal;
+	$order->setTotal($currentTotal);
 
+	$discount = $discountSvc->discountTwo($discount, $customer, $order);
+
+	$discount["grand total"] = $order->getTotal();
+	$discount["grand total"] -= $discount["revenue exceeds 1000"];
+
+	var_dump($discount);
+	
+	header('Content-type: application/json');
+	return json_encode($discount);
+
+} else {
+	$discount["error"] = "json error";
+	header('Content-type: application/json');
+	return json_encode($discount);
 }
-// } else {
-// 	$array = [
-// 		"error" => true];
-// 	header('Content-type: application/json');
-// 	echo(json_encode($array));
-// 	//return json_encode($array);
-// }
 	
 
 
