@@ -23,16 +23,17 @@ if (!empty($orderDecode)) {
 	$discount = $discountSvc->discountOne($discount, $order);
 
 	$discountSubTotal = 0;
-	foreach ($discount as $reduction) {
+	foreach ($discount["discounts"] as $reduction) {
 		$discountSubTotal += $reduction;
 	}
-	$currentTotal = $order->getTotal()-$discountSubTotal;
+	$currentTotal = $order->getTotal()+$discountSubTotal;
 	$order->setTotal($currentTotal);
 
 	$discount = $discountSvc->discountTwo($discount, $customer, $order);
 
-	$discount["grand total"] = $order->getTotal();
-	$discount["grand total"] -= $discount["revenue exceeds 1000"];
+	$discount["overview"]["order total"] = $order->getTotal();
+	$discount["overview"]["order total"] += $discount["discounts"]["revenue exceeds 1000"];
+	$discount["overview"]["total discount"] = $discountSubTotal+$discount["discounts"]["revenue exceeds 1000"];
 
 	var_dump($discount);
 	

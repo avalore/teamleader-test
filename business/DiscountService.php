@@ -6,14 +6,14 @@ class DiscountService {
 	public function discountZero($discount, $order) {
 		
 		foreach ($order->getItems() as $item) {
-			$discount[$item->getProduct()->getProductId()] = 0;
+			$discount["discounts"][$item->getProduct()->getProductId()] = 0;
 			$quantity = 0;
 			$counter = 0;
 			if ($item->getProduct()->getCategory() == "2") {
 				$quantity += $item->getQuantity();
 				$counter = floor($quantity/6);
 				if ($counter >= 1) {
-					$discount[$item->getProduct()->getProductId()] = $item->getPrice()*$counter;
+					$discount["discounts"][$item->getProduct()->getProductId()] = -($item->getPrice()*$counter);
 				}
 			}
 		}
@@ -22,7 +22,7 @@ class DiscountService {
 
 	public function discountOne($discount, $order) {
 
-		$discount["tools"] = 0;
+		$discount["discounts"]["tools"] = 0;
 		$counter = 0;
 		$priceList = [];
 		foreach ($order->getItems() as $item) {
@@ -32,16 +32,16 @@ class DiscountService {
 			}
 		}
 		if ($counter >= 2) {
-			$discount["tools"] = (min($priceList)/100)*20;
+			$discount["discounts"]["tools"] = -((min($priceList)/100)*20);
 		}
 		return $discount;
 	}
 
 	public function discountTwo($discount, $customer, $order) {
 		
-		$discount["revenue exceeds 1000"] = 0;
+		$discount["discounts"]["revenue exceeds 1000"] = 0;
 		if ($customer->getRevenue() > 1000) {
-			$discount["revenue exceeds 1000"] = ($order->getTotal()/100)*10;
+			$discount["discounts"]["revenue exceeds 1000"] = -(($order->getTotal()/100)*10);
 		}
 		return $discount;
 	}
