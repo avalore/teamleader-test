@@ -34,16 +34,14 @@ if (!empty($orderDecode)) {
 	$discount["overview"]["order total"] = $order->getTotal();
 	$discount["overview"]["order total"] += $discount["discounts"]["revenue exceeds 1000"];
 	$discount["overview"]["total discount"] = $discountSubTotal+$discount["discounts"]["revenue exceeds 1000"];
-
-	var_dump($discount);
 	
 	header('Content-type: application/json');
-	return json_encode($discount);
+	echo(json_encode($discount));
 
 } else {
 	$discount["error"] = "json error";
 	header('Content-type: application/json');
-	return json_encode($discount);
+	echo(json_encode($discount));
 }
 	
 
